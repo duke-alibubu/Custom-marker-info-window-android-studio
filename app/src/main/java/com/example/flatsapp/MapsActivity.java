@@ -15,11 +15,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -31,6 +34,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
     private static final int STROKE_WIDTH = 2;
     private static final int FILL_COLOR = 0x20ffff00;
+
+    private ClusterManager<Marker> mClusterManager;
+    private ClusterManagerRenderer mClusterManagerRenderer;
+    private ArrayList<Marker> mClusterMarkers = new ArrayList<>();
+
+
+    // add markers to the map
+    private void addMarkers(){
+        if(mClusterManager== null){
+            mClusterManager = new ClusterManager<>(this.getApplicationContext(),mMap);
+        }
+        if(mClusterManagerRenderer == null){
+            mClusterManagerRenderer = new ClusterManagerRenderer(
+                    this,
+                    mMap,
+                    mClusterManager
+            );
+            mClusterManager.setRenderer(mClusterManagerRenderer);
+        }
+
+        // test a custom marker
+
+        String snippet = "Flat ABCXYZ     Type X-room    Not a place for dogs";
+        int avatar = R.drawable.mirana;
+        Marker miranaMarker = new Marker(new LatLng(1.347687, 103.712949),"Mirana Nightshade",snippet,avatar);
+        mClusterManager.addItem(miranaMarker);
+        mClusterMarkers.add(miranaMarker);
+        mClusterManager.cluster();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         LatLng singaporeCenter = new LatLng(1.359443, 103.848104);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(singaporeCenter, 10f));
+        addMarkers();
 
         List<LatLng> woodLandsBoudary = Arrays.asList(new LatLng(1.461403, 103.790672), new LatLng(1.458014, 103.785458),
                 new LatLng(1.455032, 103.782304), new LatLng(1.452994, 103.778827), new LatLng(1.452718, 103.778365),
