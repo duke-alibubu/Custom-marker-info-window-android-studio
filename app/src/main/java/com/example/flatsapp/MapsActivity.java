@@ -3,6 +3,10 @@ package com.example.flatsapp;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,7 +19,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,7 +48,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ClusterManagerRenderer mClusterManagerRenderer;
     private ArrayList<Marker> mClusterMarkers = new ArrayList<>();
 
-
     // add markers to the map
     private void addMarkers(){
         if(mClusterManager== null){
@@ -53,15 +61,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             );
             mClusterManager.setRenderer(mClusterManagerRenderer);
         }
+        mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(this));
 
         // test a custom marker
 
-        String snippet = "Flat ABCXYZ     Type X-room    Not a place for dogs";
+        String snippet = "Flat ABCXYZ \n Type X-room \n   Not a place for dogs";
         int avatar = R.drawable.mirana;
         Marker miranaMarker = new Marker(new LatLng(1.347687, 103.712949),"Mirana Nightshade",snippet,avatar);
         mClusterManager.addItem(miranaMarker);
         mClusterMarkers.add(miranaMarker);
         mClusterManager.cluster();
+
 
     }
 
